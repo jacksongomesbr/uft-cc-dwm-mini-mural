@@ -1,56 +1,49 @@
-# Welcome to your Expo app 👋
+# Mini Mural
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Projeto de acompanhamento da disciplina de Desenvolvimento Web e Mobile
+(UFT), construído com [Expo](https://expo.dev) + [Expo Router](https://docs.expo.dev/router/introduction)
++ React Native + TypeScript.
 
-## Get started
+O código evolui capítulo a capítulo do livro-texto do curso
+([uft-cc-dwm](https://github.com/jacksongomesbr)). Cada branch congela o
+estado do app no ponto em que o capítulo correspondente o deixa. `main`
+sempre aponta para o capítulo mais recente.
 
-1. Install dependencies
+## Branches
 
-   ```bash
-   npm install
-   ```
+| Branch | Capítulo | Conteúdo |
+|---|---|---|
+| `capitulo-3` | 2 e 3: Ambiente, Git, TypeScript/JavaScript | Mini Mural em arquivo único (`src/app/index.tsx`), estado local com `useState`, sem componentes próprios. |
+| `capitulo-4` | 4: Fundamentos de React aplicados ao React Native | Mesmo app recomposto em componentes com propriedades tipadas (`ItemDoMural`, `NovoRecado`, `ResumoDoMural`), estado elevado à tela, e a funcionalidade de arquivar um recado. |
+| `main` | (aponta para o capítulo mais recente) | Sempre igual ao branch do capítulo mais recente. |
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Rodar o projeto
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+No terminal do Expo, escolha abrir em development build, emulador
+Android, simulador iOS ou Expo Go.
 
-### Other setup steps
+Para conferir o tipo do código sem executar:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npx tsc --noEmit
+```
 
-## Learn more
+## Estrutura (branch `main`, capítulo 4)
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```text
+src/
+├── app/
+│   ├── _layout.tsx    # Stack de rotas (Expo Router)
+│   └── index.tsx      # Tela: estado elevado (recados) + publicar/arquivar
+├── components/
+│   ├── NovoRecado.tsx     # Campo de digitação (estado próprio)
+│   ├── ItemDoMural.tsx    # Um recado (sem estado)
+│   └── ResumoDoMural.tsx  # Contagem de publicados/arquivados (derivado)
+└── types/
+    └── recado.ts       # Tipo Recado e StatusRecado
+```
