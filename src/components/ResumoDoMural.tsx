@@ -1,4 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
+
+import { cores, espacos, raios, tipografia } from '../theme/tokens';
 import { Recado } from '../types/recado';
 
 type ResumoDoMuralProps = {
@@ -24,6 +26,14 @@ export default function ResumoDoMural({ recados }: ResumoDoMuralProps) {
 }
 
 const styles = StyleSheet.create({
-  linha: { flexDirection: 'row', justifyContent: 'space-between' },
-  texto: { fontSize: 14, color: '#555' },
+  linha: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: espacos.sm,
+    paddingHorizontal: espacos.sm,
+    paddingVertical: espacos.xs,
+    borderRadius: raios.md,
+  },
+  texto: { ...tipografia.apoio, color: cores.textoApoio },
 });

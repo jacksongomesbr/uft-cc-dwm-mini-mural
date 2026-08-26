@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
+
+import Cartao from './Cartao';
+import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
 
 type NovoRecadoProps = {
   onPublicar: (texto: string) => void;
@@ -10,6 +13,8 @@ export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps
   const [texto, setTexto] = useState('');
 
   const podePublicar = texto.trim().length > 0;
+  const restantes = limite - texto.length;
+  const proximoDoLimite = restantes <= 20;
 
   function publicar() {
     if (!podePublicar) {
@@ -21,7 +26,7 @@ export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps
   }
 
   return (
-    <View style={styles.bloco}>
+    <Cartao>
       <Text style={styles.rotulo}>Nova mensagem</Text>
 
       <TextInput
@@ -30,47 +35,59 @@ export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps
         onChangeText={setTexto}
         maxLength={limite}
         placeholder="Escreva um recado"
+        placeholderTextColor={cores.textoApoio}
         returnKeyType="send"
         onSubmitEditing={publicar}
         accessibilityLabel="Nova mensagem"
       />
 
-      <Text style={styles.contador}>
-        {texto.length} de {limite} caracteres
+      <Text style={[styles.contador, proximoDoLimite && styles.contadorNoLimite]}>
+        {restantes} caracteres restantes
       </Text>
 
       <Pressable
-        style={[styles.botao, !podePublicar && styles.botaoDesabilitado]}
+        style={({ pressed }) => [
+          styles.botao,
+          !podePublicar && styles.botaoDesabilitado,
+          pressed && styles.botaoPressionado,
+        ]}
         onPress={publicar}
         disabled={!podePublicar}
         accessibilityRole="button"
         accessibilityLabel="Publicar recado"
+        accessibilityState={{ disabled: !podePublicar }}
       >
-        <Text style={styles.botaoTexto}>Publicar</Text>
+        <Text style={[styles.botaoTexto, !podePublicar && styles.botaoTextoDesabilitado]}>
+          Publicar
+        </Text>
       </Pressable>
-    </View>
+    </Cartao>
   );
 }
 
 const styles = StyleSheet.create({
-  bloco: { gap: 8 },
-  rotulo: { fontWeight: '600' },
+  rotulo: { ...tipografia.apoio, color: cores.texto, fontWeight: '600' },
   campo: {
-    padding: 12,
-    fontSize: 16,
+    minHeight: alvoMinimo,
+    padding: espacos.sm,
+    ...tipografia.corpo,
+    color: cores.texto,
     borderWidth: 1,
-    borderColor: '#888',
-    borderRadius: 8,
+    borderColor: cores.borda,
+    borderRadius: raios.md,
   },
-  contador: { fontSize: 14, color: '#555' },
+  contador: { ...tipografia.apoio, color: cores.textoApoio },
+  contadorNoLimite: { color: cores.alerta },
   botao: {
-    minHeight: 44,
-    padding: 12,
+    minHeight: alvoMinimo,
+    paddingHorizontal: espacos.md,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
-    backgroundColor: '#2563eb',
+    borderRadius: raios.md,
+    backgroundColor: cores.acao,
   },
-  botaoDesabilitado: { opacity: 0.5 },
-  botaoTexto: { color: '#ffffff', fontSize: 16, fontWeight: '600' },
+  botaoDesabilitado: { backgroundColor: cores.borda },
+  botaoPressionado: { opacity: 0.85 },
+  botaoTexto: { ...tipografia.corpo, color: cores.acaoTexto, fontWeight: '600' },
+  botaoTextoDesabilitado: { color: cores.textoApoio },
 });

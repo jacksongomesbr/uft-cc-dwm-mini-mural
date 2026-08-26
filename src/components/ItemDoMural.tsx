@@ -1,4 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import Cartao from './Cartao';
+import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
 import { Recado } from '../types/recado';
 
 type ItemDoMuralProps = {
@@ -6,29 +9,60 @@ type ItemDoMuralProps = {
   onArquivar: (id: string) => void;
 };
 
+function formatarHora(criadoEm: string) {
+  const data = new Date(criadoEm);
+  const hora = String(data.getHours()).padStart(2, '0');
+  const minuto = String(data.getMinutes()).padStart(2, '0');
+
+  return `${hora}:${minuto}`;
+}
+
 export default function ItemDoMural({ recado, onArquivar }: ItemDoMuralProps) {
   const arquivado = recado.status === 'arquivado';
 
   return (
-    <View style={[styles.item, arquivado && styles.itemArquivado]}>
+    <Cartao style={arquivado && styles.cartaoArquivado}>
       <Text style={styles.texto}>{recado.texto}</Text>
 
-      {!arquivado && (
-        <Pressable
-          onPress={() => onArquivar(recado.id)}
-          accessibilityRole="button"
-          accessibilityLabel={`Arquivar recado: ${recado.texto}`}
-        >
-          <Text style={styles.acao}>Arquivar</Text>
-        </Pressable>
-      )}
-    </View>
+      <View style={styles.rodape}>
+        <Text style={styles.hora}>{formatarHora(recado.criadoEm)}</Text>
+
+        {arquivado ? (
+          <Text style={styles.etiqueta}>Arquivado</Text>
+        ) : (
+          <Pressable
+            onPress={() => onArquivar(recado.id)}
+            hitSlop={espacos.sm}
+            style={({ pressed }) => [styles.acao, pressed && styles.acaoPressionada]}
+            accessibilityRole="button"
+            accessibilityLabel={`Arquivar recado: ${recado.texto}`}
+          >
+            <Text style={styles.acaoTexto}>Arquivar</Text>
+          </Pressable>
+        )}
+      </View>
+    </Cartao>
   );
 }
 
 const styles = StyleSheet.create({
-  item: { padding: 12, borderWidth: 1, borderColor: '#ccc', borderRadius: 8 },
-  itemArquivado: { opacity: 0.5 },
-  texto: { fontSize: 16 },
-  acao: { color: '#2563eb', fontWeight: '600', marginTop: 8 },
+  cartaoArquivado: { backgroundColor: cores.fundo },
+  texto: { ...tipografia.corpo, color: cores.texto },
+  rodape: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  hora: { ...tipografia.apoio, color: cores.textoApoio },
+  etiqueta: { ...tipografia.apoio, color: cores.textoApoio, fontStyle: 'italic' },
+  acao: {
+    minHeight: alvoMinimo,
+    minWidth: alvoMinimo,
+    paddingHorizontal: espacos.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: raios.md,
+  },
+  acaoPressionada: { backgroundColor: cores.borda },
+  acaoTexto: { ...tipografia.corpo, color: cores.acao, fontWeight: '600' },
 });

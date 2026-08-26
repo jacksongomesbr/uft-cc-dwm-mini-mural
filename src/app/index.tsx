@@ -1,13 +1,37 @@
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ItemDoMural from '../components/ItemDoMural';
 import NovoRecado from '../components/NovoRecado';
 import ResumoDoMural from '../components/ResumoDoMural';
+import {
+  cores,
+  espacos,
+  larguraDeTelaEstreita,
+  larguraMaximaDoConteudo,
+  tipografia,
+} from '../theme/tokens';
 import { Recado } from '../types/recado';
+
+function Separador() {
+  return <View style={styles.separador} />;
+}
 
 export default function MuralScreen() {
   const [recados, setRecados] = useState<Recado[]>([]);
+  const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
+  const telaEstreita = width < larguraDeTelaEstreita;
 
   function publicar(texto: string) {
     const novo: Recado = {
@@ -29,32 +53,48 @@ export default function MuralScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Mini Mural</Text>
-
-      <NovoRecado onPublicar={publicar} />
-
-      <ResumoDoMural recados={recados} />
-
-      <Text style={styles.subtitulo}>Recados</Text>
-
+    <KeyboardAvoidingView
+      style={styles.tela}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <FlatList
+        style={styles.coluna}
         data={recados}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.lista}
+        contentContainerStyle={{
+          paddingHorizontal: telaEstreita ? espacos.md : espacos.lg,
+          paddingTop: insets.top + espacos.md,
+          paddingBottom: insets.bottom + espacos.lg,
+        }}
+        keyboardShouldPersistTaps="handled"
+        ItemSeparatorComponent={Separador}
+        ListHeaderComponent={
+          <View style={styles.cabecalho}>
+            <Text style={styles.titulo}>Mini Mural</Text>
+            <NovoRecado onPublicar={publicar} />
+            <ResumoDoMural recados={recados} />
+            <Text style={styles.subtitulo}>Recados</Text>
+          </View>
+        }
+        ListEmptyComponent={<Text style={styles.vazio}>Nenhum recado ainda.</Text>}
         renderItem={({ item }) => (
           <ItemDoMural recado={item} onArquivar={arquivar} />
         )}
-        ListEmptyComponent={<Text style={styles.vazio}>Nenhum recado ainda.</Text>}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, gap: 8 },
-  titulo: { fontSize: 28, fontWeight: '700' },
-  subtitulo: { fontSize: 20, fontWeight: '700', marginTop: 8 },
-  lista: { gap: 8 },
-  vazio: { color: '#555', fontStyle: 'italic' },
+  tela: { flex: 1, backgroundColor: cores.fundo },
+  coluna: {
+    width: '100%',
+    maxWidth: larguraMaximaDoConteudo,
+    alignSelf: 'center',
+  },
+  cabecalho: { gap: espacos.sm, marginBottom: espacos.sm },
+  titulo: { ...tipografia.titulo, color: cores.texto },
+  subtitulo: { ...tipografia.subtitulo, color: cores.texto, marginTop: espacos.sm },
+  separador: { height: espacos.sm },
+  vazio: { ...tipografia.corpo, color: cores.textoApoio, fontStyle: 'italic' },
 });
