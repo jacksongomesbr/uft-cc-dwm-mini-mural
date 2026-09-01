@@ -2,9 +2,16 @@ import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Cartao from '../../components/Cartao';
-import { buscarRecado } from '../../data/recados';
-import { alvoMinimo, cores, espacos, larguraMaximaDoConteudo, raios, tipografia } from '../../theme/tokens';
+import Cartao from '../../../../components/Cartao';
+import { buscarRecado } from '../../../../data/recados';
+import {
+  alvoMinimo,
+  cores,
+  espacos,
+  larguraMaximaDoConteudo,
+  raios,
+  tipografia,
+} from '../../../../theme/tokens';
 
 function formatarDataHora(criadoEm: string) {
   return new Intl.DateTimeFormat('pt-BR', {

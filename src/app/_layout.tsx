@@ -17,7 +17,6 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="recado/[id]" options={{ title: 'Recado' }} />
       </Stack>
     </SafeAreaProvider>
   );

@@ -43,9 +43,11 @@ src/
 │   ├── _layout.tsx           # SafeAreaProvider + Stack de rotas
 │   ├── (tabs)/
 │   │   ├── _layout.tsx       # Abas Mural e Sobre
-│   │   ├── index.tsx         # Mural, dados locais e layout
+│   │   ├── (mural)/
+│   │   │   ├── _layout.tsx   # Pilha do mural, com barra de abas visível
+│   │   │   ├── index.tsx     # Mural, dados locais e layout
+│   │   │   └── recado/[id].tsx # Detalhe de um recado
 │   │   └── sobre.tsx         # Informações sobre o projeto
-│   ├── recado/[id].tsx       # Detalhe de um recado
 │   └── +not-found.tsx        # Endereço inexistente
 ├── components/
 │   ├── Cartao.tsx         # Moldura reutilizável (recebe children)

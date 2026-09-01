@@ -13,7 +13,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(mural)"
         options={{
           title: 'Mural',
           tabBarIcon: ({ color }) => (
