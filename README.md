@@ -16,6 +16,7 @@ sempre aponta para o capítulo mais recente.
 | `capitulo-3` | 2 e 3: Ambiente, Git, TypeScript/JavaScript | Mini Mural em arquivo único (`src/app/index.tsx`), estado local com `useState`, sem componentes próprios. |
 | `capitulo-4` | 4: Fundamentos de React aplicados ao React Native | Mesmo app recomposto em componentes com propriedades tipadas (`ItemDoMural`, `NovoRecado`, `ResumoDoMural`), estado elevado à tela, e a funcionalidade de arquivar um recado. |
 | `capitulo-5` | 5: Interfaces com React Native | Mesmo app com tema em `src/theme/tokens.ts`, cartão reutilizável com `children`, área segura, ajuste ao teclado, coluna de largura máxima e alvos de toque de 48 dp. |
+| `capitulo-6` | 6: Navegação universal e deep links | Mural com abas, tela de detalhe por endereço, rota de erro e esquema `minimural://`. |
 | `main` | (aponta para o capítulo mais recente) | Sempre igual ao branch do capítulo mais recente. |
 
 ## Rodar o projeto
@@ -34,18 +35,25 @@ Para conferir o tipo do código sem executar:
 npx tsc --noEmit
 ```
 
-## Estrutura (branch `capitulo-5`)
+## Estrutura (branch `capitulo-6`)
 
 ```text
 src/
 ├── app/
-│   ├── _layout.tsx    # SafeAreaProvider + Stack de rotas (Expo Router)
-│   └── index.tsx      # Tela: estado elevado, área segura, teclado e layout
+│   ├── _layout.tsx           # SafeAreaProvider + Stack de rotas
+│   ├── (tabs)/
+│   │   ├── _layout.tsx       # Abas Mural e Sobre
+│   │   ├── index.tsx         # Mural, dados locais e layout
+│   │   └── sobre.tsx         # Informações sobre o projeto
+│   ├── recado/[id].tsx       # Detalhe de um recado
+│   └── +not-found.tsx        # Endereço inexistente
 ├── components/
 │   ├── Cartao.tsx         # Moldura reutilizável (recebe children)
 │   ├── NovoRecado.tsx     # Campo de digitação (estado próprio)
 │   ├── ItemDoMural.tsx    # Um recado (sem estado)
 │   └── ResumoDoMural.tsx  # Contagem de publicados/arquivados (derivado)
+├── data/
+│   └── recados.ts       # Recados de exemplo e busca por identificador
 ├── theme/
 │   └── tokens.ts       # Cor, espaçamento, raio, tipografia e alvo mínimo
 └── types/

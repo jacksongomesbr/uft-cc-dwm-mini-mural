@@ -10,10 +10,15 @@ export default function RootLayout() {
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
-          headerShown: false,
+          headerStyle: { backgroundColor: cores.superficie },
+          headerTintColor: cores.acao,
+          headerTitleStyle: { fontWeight: '600' },
           contentStyle: { backgroundColor: cores.fundo },
         }}
-      />
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="recado/[id]" options={{ title: 'Recado' }} />
+      </Stack>
     </SafeAreaProvider>
   );
 }

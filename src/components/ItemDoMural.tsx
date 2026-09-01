@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Cartao from './Cartao';
@@ -22,7 +23,15 @@ export default function ItemDoMural({ recado, onArquivar }: ItemDoMuralProps) {
 
   return (
     <Cartao style={arquivado && styles.cartaoArquivado}>
-      <Text style={styles.texto}>{recado.texto}</Text>
+      <Link href={{ pathname: '/recado/[id]', params: { id: recado.id } }} asChild>
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={`Abrir recado: ${recado.texto}`}
+          style={({ pressed }) => [styles.link, pressed && styles.cartaoPressionado]}
+        >
+          <Text style={styles.texto} numberOfLines={2}>{recado.texto}</Text>
+        </Pressable>
+      </Link>
 
       <View style={styles.rodape}>
         <Text style={styles.hora}>{formatarHora(recado.criadoEm)}</Text>
@@ -47,6 +56,8 @@ export default function ItemDoMural({ recado, onArquivar }: ItemDoMuralProps) {
 
 const styles = StyleSheet.create({
   cartaoArquivado: { backgroundColor: cores.fundo },
+  link: { minHeight: alvoMinimo, justifyContent: 'center' },
+  cartaoPressionado: { opacity: 0.85 },
   texto: { ...tipografia.corpo, color: cores.texto },
   rodape: {
     flexDirection: 'row',

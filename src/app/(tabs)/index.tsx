@@ -10,24 +10,25 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import ItemDoMural from '../components/ItemDoMural';
-import NovoRecado from '../components/NovoRecado';
-import ResumoDoMural from '../components/ResumoDoMural';
+import ItemDoMural from '../../components/ItemDoMural';
+import NovoRecado from '../../components/NovoRecado';
+import ResumoDoMural from '../../components/ResumoDoMural';
+import { recadosIniciais } from '../../data/recados';
 import {
   cores,
   espacos,
   larguraDeTelaEstreita,
   larguraMaximaDoConteudo,
   tipografia,
-} from '../theme/tokens';
-import { Recado } from '../types/recado';
+} from '../../theme/tokens';
+import { Recado } from '../../types/recado';
 
 function Separador() {
   return <View style={styles.separador} />;
 }
 
 export default function MuralScreen() {
-  const [recados, setRecados] = useState<Recado[]>([]);
+  const [recados, setRecados] = useState<Recado[]>(recadosIniciais);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
