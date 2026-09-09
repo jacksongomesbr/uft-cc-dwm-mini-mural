@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Cartao from '../../../../components/Cartao';
-import { buscarRecado } from '../../../../data/recados';
+import { useRecados } from '../../../../context/RecadosContext';
 import {
   alvoMinimo,
   cores,
@@ -24,6 +24,7 @@ export default function DetalheDoRecado() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { buscarRecado, arquivarRecado } = useRecados();
   const recado = id ? buscarRecado(id) : undefined;
 
   function voltar() {
@@ -60,8 +61,16 @@ export default function DetalheDoRecado() {
         <Cartao>
           <Text style={styles.texto}>{recado.texto}</Text>
           <Text style={styles.hora}>{formatarDataHora(recado.criadoEm)}</Text>
-          {recado.status === 'arquivado' && (
+          {recado.status === 'arquivado' ? (
             <Text style={styles.etiqueta}>Arquivado</Text>
+          ) : (
+            <Pressable
+              onPress={() => arquivarRecado(recado.id)}
+              accessibilityRole="button"
+              style={({ pressed }) => [styles.acao, pressed && styles.acaoPressionada]}
+            >
+              <Text style={styles.acaoTexto}>Arquivar recado</Text>
+            </Pressable>
           )}
         </Cartao>
         <Link href="/" style={styles.link}>

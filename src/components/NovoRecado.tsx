@@ -1,45 +1,58 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
 import Cartao from './Cartao';
+import { LIMITE_RECADO, validarRecado } from '../domain/validarRecado';
 import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
 
 type NovoRecadoProps = {
   onPublicar: (texto: string) => void;
-  limite?: number;
 };
 
-export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps) {
+export default function NovoRecado({ onPublicar }: NovoRecadoProps) {
   const [texto, setTexto] = useState('');
+  const [tocouNoCampo, setTocouNoCampo] = useState(false);
+  const campoRef = useRef<TextInput>(null);
+  const erro = tocouNoCampo ? validarRecado(texto).texto : undefined;
 
-  const podePublicar = texto.trim().length > 0;
-  const restantes = limite - texto.length;
+  const restantes = LIMITE_RECADO - texto.length;
   const proximoDoLimite = restantes <= 20;
 
   function publicar() {
-    if (!podePublicar) {
+    setTocouNoCampo(true);
+    if (validarRecado(texto).texto) {
+      campoRef.current?.focus();
       return;
     }
 
     onPublicar(texto.trim());
     setTexto('');
+    setTocouNoCampo(false);
   }
 
   return (
     <Cartao>
-      <Text style={styles.rotulo}>Nova mensagem</Text>
+      <Text style={styles.rotulo}>Recado</Text>
 
       <TextInput
-        style={styles.campo}
+        ref={campoRef}
+        style={[styles.campo, erro && styles.campoComErro]}
         value={texto}
         onChangeText={setTexto}
-        maxLength={limite}
+        maxLength={LIMITE_RECADO}
+        multiline
+        textAlignVertical="top"
+        onBlur={() => setTocouNoCampo(true)}
         placeholder="Escreva um recado"
         placeholderTextColor={cores.textoApoio}
-        returnKeyType="send"
-        onSubmitEditing={publicar}
-        accessibilityLabel="Nova mensagem"
+        submitBehavior="newline"
+        accessibilityLabel={erro ? `Recado. ${erro}` : 'Recado'}
+        accessibilityHint="Escreva até 280 caracteres"
       />
+
+      {erro && (
+        <Text style={styles.erro} accessibilityLiveRegion="polite" aria-live="polite">{erro}</Text>
+      )}
 
       <Text style={[styles.contador, proximoDoLimite && styles.contadorNoLimite]}>
         {restantes} caracteres restantes
@@ -48,16 +61,13 @@ export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps
       <Pressable
         style={({ pressed }) => [
           styles.botao,
-          !podePublicar && styles.botaoDesabilitado,
           pressed && styles.botaoPressionado,
         ]}
         onPress={publicar}
-        disabled={!podePublicar}
         accessibilityRole="button"
         accessibilityLabel="Publicar recado"
-        accessibilityState={{ disabled: !podePublicar }}
       >
-        <Text style={[styles.botaoTexto, !podePublicar && styles.botaoTextoDesabilitado]}>
+        <Text style={styles.botaoTexto}>
           Publicar
         </Text>
       </Pressable>
@@ -68,7 +78,7 @@ export default function NovoRecado({ onPublicar, limite = 140 }: NovoRecadoProps
 const styles = StyleSheet.create({
   rotulo: { ...tipografia.apoio, color: cores.texto, fontWeight: '600' },
   campo: {
-    minHeight: alvoMinimo,
+    minHeight: alvoMinimo * 2,
     padding: espacos.sm,
     ...tipografia.corpo,
     color: cores.texto,
@@ -76,6 +86,8 @@ const styles = StyleSheet.create({
     borderColor: cores.borda,
     borderRadius: raios.md,
   },
+  campoComErro: { borderColor: cores.alerta },
+  erro: { ...tipografia.apoio, color: cores.alerta },
   contador: { ...tipografia.apoio, color: cores.textoApoio },
   contadorNoLimite: { color: cores.alerta },
   botao: {
@@ -86,8 +98,6 @@ const styles = StyleSheet.create({
     borderRadius: raios.md,
     backgroundColor: cores.acao,
   },
-  botaoDesabilitado: { backgroundColor: cores.borda },
   botaoPressionado: { opacity: 0.85 },
   botaoTexto: { ...tipografia.corpo, color: cores.acaoTexto, fontWeight: '600' },
-  botaoTextoDesabilitado: { color: cores.textoApoio },
 });

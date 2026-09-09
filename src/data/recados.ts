@@ -20,7 +20,3 @@ export const recadosIniciais: Recado[] = [
     status: 'arquivado',
   },
 ];
-
-export function buscarRecado(id: string): Recado | undefined {
-  return recadosIniciais.find((recado) => recado.id === id);
-}
