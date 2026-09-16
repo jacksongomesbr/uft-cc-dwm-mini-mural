@@ -56,7 +56,7 @@ export function PreferenciasProvider(
       await salvarOrdem(proxima);
       setOrdem(proxima);
     } catch {
-      setErro('Não foi possível salvar a ordem. Tente novamente.');
+      setErro('Não foi possível salvar a ordem. Tentem novamente.');
     } finally {
       gravacaoEmCurso.current = false;
       setSalvando(false);

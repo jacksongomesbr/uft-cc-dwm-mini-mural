@@ -2,25 +2,26 @@ import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
 import Cartao from './Cartao';
-import { LIMITE_RECADO, validarRecado } from '../domain/validarRecado';
+import { validarRecado } from '../domain/validarRecado';
 import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
 
 type NovoRecadoProps = {
   onPublicar: (texto: string) => void;
+  limite?: number;
 };
 
-export default function NovoRecado({ onPublicar }: NovoRecadoProps) {
+export default function NovoRecado({ onPublicar, limite = 280 }: NovoRecadoProps) {
   const [texto, setTexto] = useState('');
   const [tocouNoCampo, setTocouNoCampo] = useState(false);
   const campoRef = useRef<TextInput>(null);
-  const erro = tocouNoCampo ? validarRecado(texto).texto : undefined;
+  const erro = tocouNoCampo ? validarRecado(texto, limite).texto : undefined;
 
-  const restantes = LIMITE_RECADO - texto.length;
+  const restantes = limite - texto.length;
   const proximoDoLimite = restantes <= 20;
 
   function publicar() {
     setTocouNoCampo(true);
-    if (validarRecado(texto).texto) {
+    if (validarRecado(texto, limite).texto) {
       campoRef.current?.focus();
       return;
     }
@@ -39,7 +40,7 @@ export default function NovoRecado({ onPublicar }: NovoRecadoProps) {
         style={[styles.campo, erro && styles.campoComErro]}
         value={texto}
         onChangeText={setTexto}
-        maxLength={LIMITE_RECADO}
+        maxLength={limite}
         multiline
         textAlignVertical="top"
         onBlur={() => setTocouNoCampo(true)}
@@ -47,7 +48,7 @@ export default function NovoRecado({ onPublicar }: NovoRecadoProps) {
         placeholderTextColor={cores.textoApoio}
         submitBehavior="newline"
         accessibilityLabel={erro ? `Recado. ${erro}` : 'Recado'}
-        accessibilityHint="Escreva até 280 caracteres"
+        accessibilityHint={`Escreva até ${limite} caracteres`}
       />
 
       {erro && (

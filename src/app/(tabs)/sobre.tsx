@@ -31,23 +31,25 @@ export default function SobreScreen() {
         </Cartao>
         <Cartao>
           <Text style={styles.subtitulo}>Ordem do mural</Text>
-          {opcoes.map(({ valor, rotulo }) => (
-            <Pressable
-              key={valor}
-              onPress={() => { void escolherOrdem(valor); }}
-              disabled={bloqueado}
-              accessibilityRole="radio"
-              aria-checked={ordem === valor}
-              accessibilityState={{ checked: ordem === valor, disabled: bloqueado }}
-              style={({ pressed }) => [
-                styles.opcao, ordem === valor && styles.selecionada,
-                bloqueado && styles.bloqueada, pressed && styles.pressionada,
-              ]}
-            >
-              <Text style={styles.texto}>{rotulo}</Text>
-              {ordem === valor && <Text style={styles.apoio}>Selecionada</Text>}
-            </Pressable>
-          ))}
+          <View accessibilityRole="radiogroup">
+            {opcoes.map(({ valor, rotulo }) => (
+              <Pressable
+                key={valor}
+                onPress={() => { void escolherOrdem(valor); }}
+                disabled={bloqueado}
+                accessibilityRole="radio"
+                aria-checked={ordem === valor}
+                accessibilityState={{ checked: ordem === valor, disabled: bloqueado }}
+                style={({ pressed }) => [
+                  styles.opcao, ordem === valor && styles.selecionada,
+                  bloqueado && styles.bloqueada, pressed && styles.pressionada,
+                ]}
+              >
+                <Text style={styles.texto}>{rotulo}</Text>
+                {ordem === valor && <Text style={styles.apoio}>Selecionada</Text>}
+              </Pressable>
+            ))}
+          </View>
           {carregando && <Text style={styles.apoio}>Carregando preferência...</Text>}
           {salvando && <Text style={styles.apoio}>Salvando preferência...</Text>}
           {erro && <Text style={styles.erro} accessibilityLiveRegion="polite" aria-live="polite">{erro}</Text>}

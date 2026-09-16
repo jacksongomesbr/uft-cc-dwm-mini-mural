@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { LIMITE_RECADO, validarRecado } from '../src/domain/validarRecado.ts';
+import { validarRecado } from '../src/domain/validarRecado.ts';
 import { ordenarRecados } from '../src/domain/ordenarRecados.ts';
 
 test('recado vazio ou só com espaços exige preenchimento', () => {
@@ -9,10 +9,15 @@ test('recado vazio ou só com espaços exige preenchimento', () => {
   }
 });
 
-test('validação aceita o limite e rejeita entrada externa maior', () => {
-  assert.deepEqual(validarRecado('a'.repeat(LIMITE_RECADO)), {});
-  assert.ok(validarRecado('a'.repeat(LIMITE_RECADO + 1)).texto);
+test('validação aceita o limite padrão e rejeita entrada externa maior', () => {
+  assert.deepEqual(validarRecado('a'.repeat(280)), {});
+  assert.ok(validarRecado('a'.repeat(281)).texto);
   assert.deepEqual(validarRecado('  Recado válido\ncom duas linhas  '), {});
+});
+
+test('validação respeita um limite diferente do padrão', () => {
+  assert.deepEqual(validarRecado('a'.repeat(50), 50), {});
+  assert.ok(validarRecado('a'.repeat(51), 50).texto);
 });
 
 test('ordenação usa o instante e não altera a fonte compartilhada', () => {
