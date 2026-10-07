@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { cores, espacos, raios } from '../theme/tokens';
+import { cores, espacos, raios } from '@/shared/theme/tokens';
 
 type CartaoProps = {
   children: ReactNode;

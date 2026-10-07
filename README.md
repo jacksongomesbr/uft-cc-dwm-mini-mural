@@ -18,6 +18,7 @@ sempre aponta para o capítulo mais recente.
 | `capitulo-5` | 5: Interfaces com React Native | Mesmo app com tema em `src/theme/tokens.ts`, cartão reutilizável com `children`, área segura, ajuste ao teclado, coluna de largura máxima e alvos de toque de 48 dp. |
 | `capitulo-6` | 6: Navegação universal e deep links | Mural com abas, tela de detalhe por endereço, rota de erro e esquema `minimural://`. |
 | `capitulo-7` | 7: Formulários e estado compartilhado | Validação, recados em Context e preferência de ordem persistida com AsyncStorage. |
+| `capitulo-8` | 8: Arquitetura e modularização | Mesmo comportamento, reorganizado por funcionalidade, com domínio puro, hooks próprios e armazenamento atrás de uma interface. Decisões em `docs/arquitetura.md`. |
 | `main` | (aponta para o capítulo mais recente) | Sempre igual ao branch do capítulo mais recente. |
 
 ## Rodar o projeto
@@ -36,39 +37,57 @@ Para conferir o tipo do código sem executar:
 npx tsc --noEmit
 ```
 
-## Estrutura (branch `capitulo-7`)
+## Estrutura (branch `capitulo-8`)
 
 ```text
 src/
-├── app/
-│   ├── _layout.tsx           # SafeAreaProvider + Stack de rotas
+├── app/                        # Só rotas e layouts; sem regra de negócio
+│   ├── _layout.tsx
 │   ├── (tabs)/
-│   │   ├── _layout.tsx       # PreferenciasProvider + abas Mural e Sobre
+│   │   ├── _layout.tsx         # PreferenciasProvider + abas
 │   │   ├── (mural)/
-│   │   │   ├── _layout.tsx   # RecadosProvider + pilha do mural
-│   │   │   ├── index.tsx     # Mural, ordenação derivada e layout
+│   │   │   ├── _layout.tsx     # RecadosProvider + pilha do mural
+│   │   │   ├── index.tsx       # Mural (usa useMural)
 │   │   │   └── recado/[id].tsx # Detalhe de um recado
-│   │   └── sobre.tsx         # Informações e preferência de ordem
-│   └── +not-found.tsx        # Endereço inexistente
-├── components/
-│   ├── Cartao.tsx         # Moldura reutilizável (recebe children)
-│   ├── NovoRecado.tsx     # Campo de digitação (estado próprio)
-│   ├── ItemDoMural.tsx    # Um recado (sem estado)
-│   └── ResumoDoMural.tsx  # Contagem de publicados/arquivados (derivado)
-├── context/
-│   ├── RecadosContext.tsx
-│   └── PreferenciasContext.tsx
-├── domain/
-│   ├── validarRecado.ts
-│   └── ordenarRecados.ts
-├── data/
-│   └── recados.ts       # Recados de exemplo
-├── theme/
-│   └── tokens.ts       # Cor, espaçamento, raio, tipografia e alvo mínimo
-└── types/
-    ├── recado.ts       # Tipo Recado e StatusRecado
-    └── ordem.ts        # Opções de ordenação
+│   │   └── sobre.tsx           # Informações e preferência de ordem
+│   └── +not-found.tsx
+├── features/
+│   ├── recados/
+│   │   ├── components/         # ItemDoMural, NovoRecado, ResumoDoMural
+│   │   ├── context/            # RecadosContext
+│   │   ├── domain/             # validarRecado, ordenarRecados, criarRecado, colecaoDeRecados
+│   │   ├── hooks/              # useMural, useNovoRecado
+│   │   ├── services/           # recadosRepositorio
+│   │   └── types.ts            # Recado e StatusRecado
+│   └── preferencias/
+│       ├── context/            # PreferenciasContext
+│       ├── services/           # armazenamento, preferenciasRepositorio, armazenamentoLocal
+│       └── types.ts            # Ordem
+└── shared/
+    ├── components/Cartao.tsx
+    ├── formatacao/data.ts
+    └── theme/tokens.ts
+docs/
+└── arquitetura.md              # Decisões e custo de cada fronteira
+tests/
+├── domain.test.mjs             # Regras puras
+├── servicos.test.mjs           # Repositórios com armazenamento falso
+└── arquitetura.test.mjs        # Regras de dependência entre pastas
 ```
+
+## Conferir o capítulo 8
+
+```bash
+npm test
+npx tsc --noEmit
+npx expo export --platform web
+```
+
+O comportamento é o do capítulo 7. Publiquem, arquivem, abram o detalhe, mudem a
+ordem em Sobre e recarreguem; nada disso mudou. O que mudou foi o lugar de cada
+responsabilidade. Leiam `docs/arquitetura.md` e rodem `npm test`: o arquivo
+`tests/arquitetura.test.mjs` falha se uma regra de dependência for quebrada, por exemplo
+um arquivo de `domain/` importando `react-native`.
 
 ## Conferir o capítulo 7
 

@@ -2,20 +2,15 @@ import {
   createContext, useContext, useEffect, useRef, useState,
   type ReactNode,
 } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import type { Ordem } from '../types/ordem';
-const CHAVE_ORDEM = '@mini-mural:ordem';
+import { armazenamentoLocal } from '@/features/preferencias/services/armazenamentoLocal';
+import {
+  criarRepositorioDePreferencias,
+  type RepositorioDePreferencias,
+} from '@/features/preferencias/services/preferenciasRepositorio';
+import type { Ordem } from '@/features/preferencias/types';
 
-async function lerOrdem(): Promise<Ordem> {
-  const valor = await AsyncStorage.getItem(CHAVE_ORDEM);
-  return valor === 'mais-antigos' ? 'mais-antigos' : 'mais-recentes';
-}
-
-async function salvarOrdem(ordem: Ordem) {
-  await AsyncStorage.setItem(CHAVE_ORDEM, ordem);
-}
-
+const repositorioPadrao = criarRepositorioDePreferencias(armazenamentoLocal);
 
 type Preferencias = {
   ordem: Ordem;
@@ -27,8 +22,13 @@ type Preferencias = {
 
 const Contexto = createContext<Preferencias | null>(null);
 
+type PreferenciasProviderProps = {
+  children: ReactNode;
+  repositorio?: RepositorioDePreferencias;
+};
+
 export function PreferenciasProvider(
-  { children }: { children: ReactNode }
+  { children, repositorio = repositorioPadrao }: PreferenciasProviderProps
 ) {
   const [ordem, setOrdem] = useState<Ordem>('mais-recentes');
   const [carregando, setCarregando] = useState(true);
@@ -38,14 +38,14 @@ export function PreferenciasProvider(
 
   useEffect(() => {
     let ativo = true;
-    lerOrdem()
+    repositorio.lerOrdem()
       .then((valor) => { if (ativo) setOrdem(valor); })
       .catch(() => {
         if (ativo) setErro('Falha ao ler a ordem. Usando mais recentes.');
       })
       .finally(() => { if (ativo) setCarregando(false); });
     return () => { ativo = false; };
-  }, []);
+  }, [repositorio]);
 
   async function escolherOrdem(proxima: Ordem) {
     if (carregando || gravacaoEmCurso.current) return;
@@ -53,7 +53,7 @@ export function PreferenciasProvider(
     setSalvando(true);
     setErro(null);
     try {
-      await salvarOrdem(proxima);
+      await repositorio.salvarOrdem(proxima);
       setOrdem(proxima);
     } catch {
       setErro('Não foi possível salvar a ordem. Tentem novamente.');

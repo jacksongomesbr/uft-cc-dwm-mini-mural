@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { cores } from '../theme/tokens';
+import { cores } from '@/shared/theme/tokens';
 
 export default function RootLayout() {
   return (

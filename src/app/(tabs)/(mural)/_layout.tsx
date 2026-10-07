@@ -1,7 +1,7 @@
-import { RecadosProvider } from '../../../context/RecadosContext';
 import { Stack } from 'expo-router';
 
-import { cores } from '../../../theme/tokens';
+import { RecadosProvider } from '@/features/recados/context/RecadosContext';
+import { cores } from '@/shared/theme/tokens';
 
 export default function MuralLayout() {
   return (

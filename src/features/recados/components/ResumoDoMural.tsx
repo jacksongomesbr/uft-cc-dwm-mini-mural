@@ -1,17 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { cores, espacos, raios, tipografia } from '../theme/tokens';
-import { Recado } from '../types/recado';
+import { resumirRecados } from '@/features/recados/domain/colecaoDeRecados';
+import type { Recado } from '@/features/recados/types';
+import { cores, espacos, raios, tipografia } from '@/shared/theme/tokens';
 
 type ResumoDoMuralProps = {
   recados: Recado[];
 };
 
 export default function ResumoDoMural({ recados }: ResumoDoMuralProps) {
-  const publicados = recados.filter(
-    (recado) => recado.status === 'publicado',
-  ).length;
-  const arquivados = recados.length - publicados;
+  const { publicados, arquivados } = resumirRecados(recados);
 
   return (
     <View style={styles.linha}>

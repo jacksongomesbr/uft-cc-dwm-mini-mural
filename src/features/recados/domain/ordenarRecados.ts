@@ -1,6 +1,5 @@
-import type { Recado } from '../types/recado';
-
-import type { Ordem } from '../types/ordem';
+import type { Ordem } from '@/features/preferencias/types';
+import type { Recado } from '@/features/recados/types';
 
 export function ordenarRecados(
   recados: Recado[], ordem: Ordem

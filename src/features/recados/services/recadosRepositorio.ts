@@ -1,6 +1,12 @@
-import { Recado } from '../types/recado';
+import type { Recado } from '@/features/recados/types';
 
-export const recadosIniciais: Recado[] = [
+/** Fronteira de onde os recados vêm. Hoje a lista é fixa; a troca por uma
+ *  fonte remota acontece aqui, sem mexer em telas nem em regras. */
+export type RecadosRepositorio = {
+  listar: () => Recado[];
+};
+
+const recadosIniciais: Recado[] = [
   {
     id: '42',
     texto: 'Reunião de equipe na quinta, às 14h.',
@@ -20,3 +26,7 @@ export const recadosIniciais: Recado[] = [
     status: 'arquivado',
   },
 ];
+
+export const recadosEmMemoria: RecadosRepositorio = {
+  listar: () => recadosIniciais,
+};

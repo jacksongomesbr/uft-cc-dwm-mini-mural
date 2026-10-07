@@ -1,10 +1,10 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Cartao from '../../components/Cartao';
-import { usePreferencias } from '../../context/PreferenciasContext';
-import type { Ordem } from '../../types/ordem';
-import { alvoMinimo, raios, cores, espacos, larguraMaximaDoConteudo, tipografia } from '../../theme/tokens';
+import { usePreferencias } from '@/features/preferencias/context/PreferenciasContext';
+import type { Ordem } from '@/features/preferencias/types';
+import Cartao from '@/shared/components/Cartao';
+import { alvoMinimo, raios, cores, espacos, larguraMaximaDoConteudo, tipografia } from '@/shared/theme/tokens';
 
 export default function SobreScreen() {
   const insets = useSafeAreaInsets();

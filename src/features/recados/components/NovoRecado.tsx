@@ -1,9 +1,8 @@
-import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
-import Cartao from './Cartao';
-import { validarRecado } from '../domain/validarRecado';
-import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
+import { useNovoRecado } from '@/features/recados/hooks/useNovoRecado';
+import Cartao from '@/shared/components/Cartao';
+import { alvoMinimo, cores, espacos, raios, tipografia } from '@/shared/theme/tokens';
 
 type NovoRecadoProps = {
   onPublicar: (texto: string) => void;
@@ -11,25 +10,10 @@ type NovoRecadoProps = {
 };
 
 export default function NovoRecado({ onPublicar, limite = 280 }: NovoRecadoProps) {
-  const [texto, setTexto] = useState('');
-  const [tocouNoCampo, setTocouNoCampo] = useState(false);
-  const campoRef = useRef<TextInput>(null);
-  const erro = tocouNoCampo ? validarRecado(texto, limite).texto : undefined;
-
-  const restantes = limite - texto.length;
-  const proximoDoLimite = restantes <= 20;
-
-  function publicar() {
-    setTocouNoCampo(true);
-    if (validarRecado(texto, limite).texto) {
-      campoRef.current?.focus();
-      return;
-    }
-
-    onPublicar(texto.trim());
-    setTexto('');
-    setTocouNoCampo(false);
-  }
+  const {
+    texto, setTexto, campoRef, erro,
+    restantes, proximoDoLimite, aoSairDoCampo, publicar,
+  } = useNovoRecado(onPublicar, limite);
 
   return (
     <Cartao>
@@ -43,7 +27,7 @@ export default function NovoRecado({ onPublicar, limite = 280 }: NovoRecadoProps
         maxLength={limite}
         multiline
         textAlignVertical="top"
-        onBlur={() => setTocouNoCampo(true)}
+        onBlur={aoSairDoCampo}
         placeholder="Escreva um recado"
         placeholderTextColor={cores.textoApoio}
         submitBehavior="newline"

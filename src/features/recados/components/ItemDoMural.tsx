@@ -1,22 +1,15 @@
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Cartao from './Cartao';
-import { alvoMinimo, cores, espacos, raios, tipografia } from '../theme/tokens';
-import { Recado } from '../types/recado';
+import Cartao from '@/shared/components/Cartao';
+import { formatarHora } from '@/shared/formatacao/data';
+import { alvoMinimo, cores, espacos, raios, tipografia } from '@/shared/theme/tokens';
+import type { Recado } from '@/features/recados/types';
 
 type ItemDoMuralProps = {
   recado: Recado;
   onArquivar: (id: string) => void;
 };
-
-function formatarHora(criadoEm: string) {
-  const data = new Date(criadoEm);
-  const hora = String(data.getHours()).padStart(2, '0');
-  const minuto = String(data.getMinutes()).padStart(2, '0');
-
-  return `${hora}:${minuto}`;
-}
 
 export default function ItemDoMural({ recado, onArquivar }: ItemDoMuralProps) {
   const arquivado = recado.status === 'arquivado';

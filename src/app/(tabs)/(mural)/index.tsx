@@ -10,27 +10,27 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import ItemDoMural from '../../../components/ItemDoMural';
-import NovoRecado from '../../../components/NovoRecado';
-import ResumoDoMural from '../../../components/ResumoDoMural';
-import { useRecados } from '../../../context/RecadosContext';
-import { usePreferencias } from '../../../context/PreferenciasContext';
-import { ordenarRecados } from '../../../domain/ordenarRecados';
+import ItemDoMural from '@/features/recados/components/ItemDoMural';
+import NovoRecado from '@/features/recados/components/NovoRecado';
+import ResumoDoMural from '@/features/recados/components/ResumoDoMural';
+import { useMural } from '@/features/recados/hooks/useMural';
 import {
   cores,
   espacos,
   larguraDeTelaEstreita,
   larguraMaximaDoConteudo,
   tipografia,
-} from '../../../theme/tokens';
+} from '@/shared/theme/tokens';
 
 function Separador() {
   return <View style={styles.separador} />;
 }
 
 export default function MuralScreen() {
-  const { recados, adicionarRecado, arquivarRecado } = useRecados();
-  const { ordem, carregando, erro } = usePreferencias();
+  const {
+    recados, recadosOrdenados, carregando, erro,
+    adicionarRecado, arquivarRecado,
+  } = useMural();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -43,7 +43,6 @@ export default function MuralScreen() {
       </View>
     );
   }
-  const recadosOrdenados = ordenarRecados(recados, ordem);
 
   return (
     <KeyboardAvoidingView

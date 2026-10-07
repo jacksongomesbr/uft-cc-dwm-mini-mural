@@ -2,8 +2,9 @@ import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Cartao from '../../../../components/Cartao';
-import { useRecados } from '../../../../context/RecadosContext';
+import { useRecados } from '@/features/recados/context/RecadosContext';
+import Cartao from '@/shared/components/Cartao';
+import { formatarDataHora } from '@/shared/formatacao/data';
 import {
   alvoMinimo,
   cores,
@@ -11,14 +12,7 @@ import {
   larguraMaximaDoConteudo,
   raios,
   tipografia,
-} from '../../../../theme/tokens';
-
-function formatarDataHora(criadoEm: string) {
-  return new Intl.DateTimeFormat('pt-BR', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-  }).format(new Date(criadoEm));
-}
+} from '@/shared/theme/tokens';
 
 export default function DetalheDoRecado() {
   const { id } = useLocalSearchParams<{ id?: string }>();

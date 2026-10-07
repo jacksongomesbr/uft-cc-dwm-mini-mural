@@ -1,6 +1,16 @@
 import { createContext, type ReactNode, useContext, useRef, useState } from 'react';
-import { recadosIniciais } from '../data/recados';
-import type { Recado } from '../types/recado';
+
+import {
+  encontrarRecado,
+  incluirRecado,
+  marcarComoArquivado,
+} from '@/features/recados/domain/colecaoDeRecados';
+import { criarRecado } from '@/features/recados/domain/criarRecado';
+import {
+  recadosEmMemoria,
+  type RecadosRepositorio,
+} from '@/features/recados/services/recadosRepositorio';
+import type { Recado } from '@/features/recados/types';
 
 type RecadosContexto = {
   recados: Recado[];
@@ -11,30 +21,31 @@ type RecadosContexto = {
 
 const ContextoDeRecados = createContext<RecadosContexto | null>(null);
 
-export function RecadosProvider({ children }: { children: ReactNode }) {
-  const [recados, setRecados] = useState(recadosIniciais);
+type RecadosProviderProps = {
+  children: ReactNode;
+  repositorio?: RecadosRepositorio;
+};
+
+export function RecadosProvider(
+  { children, repositorio = recadosEmMemoria }: RecadosProviderProps
+) {
+  const [recados, setRecados] = useState(() => repositorio.listar());
 
   const sequencia = useRef(0);
 
   function adicionarRecado(texto: string) {
     // Identificador da sessão; a sequência evita colisões no mesmo milissegundo.
-    const recado: Recado = {
-      id: `local-${Date.now()}-${++sequencia.current}`,
-      texto,
-      criadoEm: new Date().toISOString(),
-      status: 'publicado',
-    };
-    setRecados((atuais) => [recado, ...atuais]);
+    const id = `local-${Date.now()}-${++sequencia.current}`;
+    const recado = criarRecado(texto, id, new Date());
+    setRecados((atuais) => incluirRecado(atuais, recado));
   }
 
   function buscarRecado(id: string) {
-    return recados.find((recado) => recado.id === id);
+    return encontrarRecado(recados, id);
   }
 
   function arquivarRecado(id: string) {
-    setRecados((atuais) => atuais.map((recado) => (
-      recado.id === id ? { ...recado, status: 'arquivado' } : recado
-    )));
+    setRecados((atuais) => marcarComoArquivado(atuais, id));
   }
 
   return (

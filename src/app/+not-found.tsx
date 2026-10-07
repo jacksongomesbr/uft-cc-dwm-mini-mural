@@ -2,7 +2,7 @@ import { Link, Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { cores, espacos, larguraMaximaDoConteudo, tipografia } from '../theme/tokens';
+import { cores, espacos, larguraMaximaDoConteudo, tipografia } from '@/shared/theme/tokens';
 
 export default function NaoEncontrado() {
   const insets = useSafeAreaInsets();

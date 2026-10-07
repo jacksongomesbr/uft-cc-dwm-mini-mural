@@ -1,8 +1,8 @@
-import { PreferenciasProvider } from '../../context/PreferenciasContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
-import { cores } from '../../theme/tokens';
+import { PreferenciasProvider } from '@/features/preferencias/context/PreferenciasContext';
+import { cores } from '@/shared/theme/tokens';
 
 export default function TabsLayout() {
   return (
